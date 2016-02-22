@@ -1,0 +1,14 @@
+= javascript_include_tag 'rails_admin_charts/application'
+- if @abstract_model.model.chart_form?
+  .col-md-7
+    = form_tag charts_path(:model_name => @abstract_model.model_name), class: "form-inline", remote: true do
+      = label_tag "From"
+      = date_field_tag "chart_form[from]", Date.today.beginning_of_year, class: "form-control"
+      = label_tag "To"
+      = date_field_tag "chart_form[to]", Date.today, class: "form-control"
+      = select_tag "chart_form[condition]", options_for_select(@abstract_model.model.class.all.collect{|c| [c.name, c.id]}, selected: @abstract_model.model.class.first.id), class: "form-control"
+      = submit_tag "Submit", class: "btn btn-primary"
+    %br
+#growth_rate{:style => "min-width: 400px; height: 400px;"}
+  :javascript
+    #{raw (render partial: 'chart', formats: [:js], locals: {data: @abstract_model.model.graph_data})}
